@@ -1,3 +1,5 @@
+# ---> Python and Django <---
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -160,3 +162,47 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# ---- Node.js & React Native ----
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+
+# Expo and React Native specific
+.expo/
+.expo-shared/
+.expo/web-build/
+web-build/
+
+# Android files
+android/
+**/android/app/build/
+**/android/.gradle/
+**/android/.idea/
+
+# iOS files
+ios/
+ios/Pods/
+ios/build/
+
+# macOS files
+.DS_Store
+
+# Metro bundler cache
+.cache/
+
+# Lint and debug
+.eslintcache
