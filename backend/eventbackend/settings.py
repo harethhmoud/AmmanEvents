@@ -141,3 +141,5 @@ DATABASES = {
     }
 }
 
+MEDIA_URL = '/media/' #url that will serve the media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #directory where the media files will be stored
