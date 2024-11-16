@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 CATEGORY_CHOICES = [
     ('sports', 'Sports'), #(db value, display name)
@@ -15,11 +16,13 @@ CATEGORY_CHOICES = [
 class Event(models.Model):
     title = models.CharField(max_length=200)
     date = models.DateTimeField()
-    location = models.CharField(max_length=200)
+    location = models.CharField(max_length=200) # maybe change to google maps ting in a bit
     # all uploaded images will go to the images folder
     image = models.ImageField(upload_to='images/')
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     description = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='events')
+
 
     def __str__(self):
         return self.title
@@ -39,6 +42,7 @@ class Rating(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     score = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
     comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'{self.event.title} - {self.user.username}'
