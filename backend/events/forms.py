@@ -5,8 +5,8 @@ from .models import Event
 # Creating custom form coz Django DateTime does not support what I want
 class EventAdminForm(forms.ModelForm):
     class Meta:
-        model = Event
-        fields = '__all__'
-        widgets = {
+        model = Event # linking form to event model
+        fields = '__all__' # all fields in the model are included
+        widgets = { 
             'date': AdminSplitDateTime(),
         }
