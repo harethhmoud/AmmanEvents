@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, Rating   
+from .models import Event, Rating, RSVP   
 from .forms import EventAdminForm
 
 class EventAdmin(admin.ModelAdmin):
@@ -19,7 +19,12 @@ class RatingAdmin(admin.ModelAdmin):
     # Use double underscores (`__`) to reference related model fields (e.g., event__title).
     search_fields = ('event__title', 'user__username')
 
-# Register your models here.
+class RSVPAdmin(admin.ModelAdmin):
+    list_display = ('event', 'user', 'status', 'updated_at')
+    list_filter = ('status', 'updated_at')
+    search_fields = ('event__title', 'user__username')
+
+admin.site.register(RSVP, RSVPAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Rating, RatingAdmin)
 

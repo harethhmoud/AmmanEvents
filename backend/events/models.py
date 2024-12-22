@@ -38,7 +38,7 @@ class Rating(models.Model):
     # This means that many ratings can be associated with one event.
     # If an event is deleted, all associated ratings will be deleted.
     # The related_name attribute allows us to access ratings from an event instance.
-    class Meta: # meta class modifies behaviour of model without modifying the model itself
+    class Meta: # meta class modifies behavior of model without modifying the model itself
         unique_together = [['event', 'user']]
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ratings')
@@ -50,3 +50,19 @@ class Rating(models.Model):
     def __str__(self):
         return f'{self.event.title} - {self.user.username}'
 
+class RSVP(models.Model):
+    STATUS_CHOICES = [
+        ('GOING', 'Going'),
+        ('INTERESTED', 'Interested'),
+    ]
+
+    class Meta:
+        unique_together = [['event', 'user']]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='rsvps')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.event.title} - {self.user.username} - {self.get_status_display()}'

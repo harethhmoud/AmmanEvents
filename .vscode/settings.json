@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": "/Users/harethhmoud/AmmanEvents/backend/venv/bin/python",
+  "terminal.integrated.env.osx": {
+    "VIRTUAL_ENV": "/Users/harethhmoud/AmmanEvents/backend/venv",
+    "PATH": "/Users/harethhmoud/AmmanEvents/backend/venv/bin:${env:PATH}"
+  }
+}
