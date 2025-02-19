@@ -4,14 +4,28 @@ from django.conf import settings
 from organizers.models import Organizer
 
 class Transaction(models.Model):
-    organizer = models.ForeignKey(
-        Organizer, on_delete=models.CASCADE, related_name='transactions'
+    # Basic transaction info
+    buyer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        default=1  # Use the primary key of a valid user
     )
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=50, default='success')
-    # Optional: If integrating with external gateways, store a transaction reference ID
-    # external_reference = models.CharField(max_length=100, blank=True, null=True)
+    event = models.ForeignKey(
+        'events.Event',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    ticket = models.ForeignKey('tickets.Ticket', on_delete=models.CASCADE, null=True, blank=True)
+
+    # Reference from your payment processor (e.g., Stripe ID, PayPal ID)
+    external_payment_id = models.CharField(max_length=255, blank=True)
+
+    amount = models.DecimalField(max_digits=9, decimal_places=2)
+    status = models.CharField(max_length=20, default='pending')  # "completed", "refunded", etc.
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.organizer.username} - {self.amount} on {self.timestamp}"
+        return f"Transaction #{self.id} - Buyer: {self.buyer} - Amount: {self.amount}"

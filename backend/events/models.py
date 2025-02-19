@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from organizers.models import Organizer
+import datetime
 
 # The main Event model with additional fields
 class Event(models.Model):
@@ -22,34 +24,51 @@ class Event(models.Model):
     ]
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='OTHER')
     
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    duration = models.DurationField(null=True, blank=True)
+    # Multiple photos — can store in separate model or in a JSON field
+    # For simplicity, let's do a relationship:
+    # If you only want URLs, you could do eventPhotoURLs = JSONField(default=list).
+    eventPhotoURLs = models.JSONField(default=list, blank=True)
     
+    # Single or multiple date/time fields
+    # If you need multiple dates, consider a separate model or JSONField.
+    start_date = models.DateField(default=datetime.date.today)
+    end_date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    duration = models.DurationField(null=True, blank=True)
+
     location = models.CharField(max_length=255)
         
     # Organizer details, now linked to the Organizer app
-    organizer = models.ForeignKey(
-        'organizers.Organizer',
-        on_delete=models.CASCADE,
-        related_name='created_events',
-        default=1 
-    )
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE, related_name='created_events')
     
     isPromoted = models.BooleanField(default=False)
     is18_plus = models.BooleanField(default=False)
     
+    # Contact (often from the organizer, but you can store separately if needed)
+    contact_email = models.EmailField(blank=True)
+    contact_phone = models.CharField(max_length=20, blank=True)
+    
     likes_count = models.PositiveIntegerField(default=0)
     
-    related_events = models.ManyToManyField('self', symmetrical=False, blank=True)
+    related_events = models.ManyToManyField('self', blank=True, symmetrical=False)
     
-    refundPolicy = models.TextField(null=True, blank=True)
+    refundPolicy = models.TextField(blank=True, null=True)
+    
+    # Optional schedule/agenda (could be JSON or separate model)
+    schedule = models.JSONField(default=list, blank=True)
+    
+    # Tags: if you want a many-to-many relationship to a Tag model, or store as JSON
+    tags = models.JSONField(default=list, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.title
+
+    @property
+    def rsvp_count(self):
+        return self.rsvped_by_users.count()
 
 
 class EventPhoto(models.Model):
@@ -62,15 +81,24 @@ class EventPhoto(models.Model):
 
 # Model for ticket tiers and their prices
 class TicketTier(models.Model):
+    TIER_CHOICES = [
+        ('GA', 'General Admission'),
+        ('VIP', 'VIP'),
+        ('EARLY_BIRD', 'Early Bird'),
+        ('OTHER', 'Other'),
+    ]
     event = models.ForeignKey(
-        Event,
+        'events.Event',
         on_delete=models.CASCADE,
-        related_name='ticket_tiers'
+        related_name='ticket_tiers',
+        null=True,
+        blank=True
     )
-    # Ex: "General Admission", "VIP", etc.
-    tier_name = models.CharField(max_length=50)
-    
-    # Price for the ticket tier
+    tier_name = models.CharField(
+        max_length=50,
+        choices=TIER_CHOICES,
+        default='GA'
+    )
     price = models.DecimalField(max_digits=7, decimal_places=2)
     
     def __str__(self):
