@@ -68,7 +68,8 @@ class Event(models.Model):
 
     @property
     def rsvp_count(self):
-        return self.rsvped_by_users.count()
+        # Temporarily return 0 since RSVP functionality is not implemented.
+        return 0
 
 
 class EventPhoto(models.Model):

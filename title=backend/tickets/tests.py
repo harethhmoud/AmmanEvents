@@ -10,20 +10,23 @@ User = get_user_model()
 
 class TicketModelTest(TestCase):
     def setUp(self):
+        # Create a buyer and an organizer user.
         self.buyer = User.objects.create_user(
             username="buyer", 
             password="password", 
-            email="buyer@gmail.com"
+            email="buyer@example.com"
         )
         self.organizer_user = User.objects.create_user(
             username="organizer", 
             password="password", 
-            email="organizer@gmail.com"
+            email="organizer@example.com"
         )
+        # Create an Organizer instance linked to the organizer user.
         self.organizer = Organizer.objects.create(
             user=self.organizer_user,
             name="Test Organizer"
         )
+        # Create an event, requiring an organizer.
         self.event = Event.objects.create(
             title="Test Event",
             description="Event description",
@@ -31,12 +34,13 @@ class TicketModelTest(TestCase):
             start_date=datetime.date.today(),
             location="Test Location",
             organizer=self.organizer,
-            contact_email="org@gmail.com",
+            contact_email="org@example.com",
             contact_phone="1234567890"
         )
+        # Create a ticket tier for the event.
         self.ticket_tier = TicketTier.objects.create(
             event=self.event,
-            tier_name="GA",
+            tier_name="GA",  # General Admission as defined in choices.
             price=25.00
         )
 
@@ -81,4 +85,4 @@ class TicketModelTest(TestCase):
         )
         self.assertEqual(ticket.buyer, self.buyer)
         self.assertEqual(ticket.event, self.event)
-        self.assertEqual(ticket.ticket_tier, self.ticket_tier)
+        self.assertEqual(ticket.ticket_tier, self.ticket_tier) 
