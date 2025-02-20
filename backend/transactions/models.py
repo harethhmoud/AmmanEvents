@@ -4,7 +4,6 @@ from django.conf import settings
 from organizers.models import Organizer
 
 class Transaction(models.Model):
-    # Basic transaction info
     buyer = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -18,11 +17,11 @@ class Transaction(models.Model):
     )
     ticket = models.ForeignKey('tickets.Ticket', on_delete=models.CASCADE, null=True, blank=True)
 
-    # Reference from your payment processor (e.g., Stripe ID, PayPal ID)
+    # Reference from payment processor (probably gonna be a stripe id)
     external_payment_id = models.CharField(max_length=255, blank=True)
 
     amount = models.DecimalField(max_digits=9, decimal_places=2)
-    status = models.CharField(max_length=20, default='pending')  # "completed", "refunded", etc.
+    status = models.CharField(max_length=20, default='pending')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -30,7 +30,6 @@ class UserModelTest(TestCase):
             email="test@gmail.com",
             password="securepassword"
         )
-        # Here we assume __str__ returns the username.
         self.assertEqual(str(user), "testuser")
 
     def test_create_superuser(self):
