@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, permissions
 from .models import Organizer
 from .serializers import OrganizerSerializer
+from .permissions import IsOrganizerOrReadOnly
 
 # Create your views here.
 
@@ -14,6 +15,7 @@ class OrganizerViewSet(viewsets.ModelViewSet):
     serializer_class = OrganizerSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'country', 'main_city']
+    permission_classes = [permissions.IsAuthenticated, IsOrganizerOrReadOnly]
     
     def get_queryset(self):
         """

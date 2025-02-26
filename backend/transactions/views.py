@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, permissions
 from .models import Transaction
 from .serializers import TransactionSerializer
 
@@ -15,22 +15,18 @@ class TransactionViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['status', 'external_payment_id']
     
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            # Only allow creation, not modification
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    
     def get_queryset(self):
-        """
-        Optionally filters transactions by buyer, event, or status.
-        """
-        queryset = Transaction.objects.all()
-        
-        # Filter by query parameters if provided
-        buyer_id = self.request.query_params.get('buyer')
-        event_id = self.request.query_params.get('event')
-        status = self.request.query_params.get('status')
-        
-        if buyer_id:
-            queryset = queryset.filter(buyer__id=buyer_id)
-        if event_id:
-            queryset = queryset.filter(event__id=event_id)
-        if status:
-            queryset = queryset.filter(status=status)
-            
-        return queryset
+        # Regular users can only see their own transactions
+        # Staff/admin can see all transactions
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return Transaction.objects.all()
+        return Transaction.objects.filter(buyer=user)

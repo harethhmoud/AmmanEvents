@@ -11,13 +11,19 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # For list/retrieve, we'll filter by user in get_queryset
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            # Only ticket owners can modify their tickets
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    
     def get_queryset(self):
-        """
-        Optionally restricts the returned tickets to a given user,
-        by filtering against a 'buyer' query parameter in the URL.
-        """
-        queryset = Ticket.objects.all()
-        buyer_id = self.request.query_params.get('buyer')
-        if buyer_id is not None:
-            queryset = queryset.filter(buyer__id=buyer_id)
-        return queryset
+        # Regular users can only see their own tickets
+        # Staff/admin can see all tickets
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return Ticket.objects.all()
+        return Ticket.objects.filter(buyer=user)
