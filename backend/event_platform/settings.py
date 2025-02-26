@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'organizers',
     'transactions',
     'users',
+    'rest_framework', #REST framework is a toolkit for building Web APIs
+    'corsheaders', #CORS is a security feature that allows or restricts resources on a web page to be requested from another domain
 ]
 
 MIDDLEWARE = [
@@ -54,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'event_platform.urls'
@@ -133,3 +137,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'users.User'
+
+CORS_ALLOW_ALL_ORIGINS = True #Allows requests from all origins for development purposes ONLY
