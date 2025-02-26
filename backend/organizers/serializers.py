@@ -10,7 +10,7 @@ class OrganizerSerializer(serializers.ModelSerializer):
     """
     # Nested serializers for related objects
     user_details = UserSerializer(source='user', read_only=True)
-    created_events = EventSerializer(source='created_events', many=True, read_only=True)
+    created_events = EventSerializer(many=True, read_only=True)
     
     class Meta:
         model = Organizer
