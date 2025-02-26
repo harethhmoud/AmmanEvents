@@ -8,19 +8,21 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = [
-            'id', 'username', 'email', 'first_name', 'last_name',
-            'country', 'main_city', 'profile_pic', 'phone_number',
-            'user_type'
-        ]
-        # Password should be write-only for security
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name', 'country', 'main_city', 'phone_number', 'user_type']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {'required': True},  # Make email required
+        }
+    
+    def validate_email(self, value):
+        """
+        Check that the email is valid.
+        """
+        if '@' not in value:
+            raise serializers.ValidationError("Enter a valid email address.")
+        return value
     
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        user = User.objects.create(**validated_data)
-        if password:
-            user.set_password(password) # Hashes the password
-            user.save()
+        user = User.objects.create_user(**validated_data)
         return user
 
