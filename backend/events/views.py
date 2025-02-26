@@ -6,19 +6,16 @@ from .serializers import EventSerializer, TicketTierSerializer, EventPhotoSerial
 # This file contains the logic for handling API requests.
 # It defines the views that handle requests to the /api/events/, /api/ticket-tiers/, and /api/event-photos/ endpoints.
 
-# ViewSets provide CRUD operations automatically
+# Each ViewSet handles a specific model and provides CRUD operations automatically (GET, POST, PUT, DELETE) 
 
-# Handles /api/events/ endpoints
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-# Handles /api/ticket-tiers/ endpoints
 class TicketTierViewSet(viewsets.ModelViewSet):
     queryset = TicketTier.objects.all()
     serializer_class = TicketTierSerializer
 
-# Handles /api/event-photos/ endpoints
 class EventPhotoViewSet(viewsets.ModelViewSet):
     queryset = EventPhoto.objects.all()
     serializer_class = EventPhotoSerializer

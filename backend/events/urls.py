@@ -11,3 +11,4 @@ router.register(r'event-photos', EventPhotoViewSet)
 urlpatterns = [
     path('', include(router.urls)),
 ] 
+

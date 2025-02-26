@@ -24,6 +24,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('events.urls')),
+    path('api/', include('users.urls')),
+    path('api/', include('tickets.urls')),
+    path('api/', include('transactions.urls')),
+    path('api/', include('organizers.urls')),
 ]
 
 if settings.DEBUG:
