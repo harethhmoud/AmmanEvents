@@ -6,6 +6,18 @@ class TicketSerializer(serializers.ModelSerializer):
     """
     Converts Ticket model instances to JSON and vice versa.
     Includes nested event and ticket tier data for detailed views.
+    
+    Fields:
+    - id: Unique identifier for the ticket
+    - buyer: User who purchased the ticket (FK to User model)
+    - event: Event the ticket is for (FK to Event model)
+    - ticket_tier: Tier of the ticket (FK to TicketTier model)
+    - purchase_price: Price paid for the ticket
+    - quantity: Number of tickets purchased
+    - payment_method: Method used for payment
+    - purchase_date: Date and time of purchase
+    - event_details: Nested details of the event (read-only)
+    - tier_details: Nested details of the ticket tier (read-only)
     """
     # Nested serializers for related objects (read-only)
     event_details = EventSerializer(source='event', read_only=True)

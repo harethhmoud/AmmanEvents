@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework', #REST framework is a toolkit for building Web APIs
     'corsheaders', #CORS is a security feature that allows or restricts resources on a web page to be requested from another domain
     'rest_framework_simplejwt', # This lib is used for token-based authentication, security.
-    'drf_yasg',  # Add this line
+    'drf_yasg',  # Swagger documentation
 ]
 
 MIDDLEWARE = [
